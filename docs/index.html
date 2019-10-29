@@ -13155,7 +13155,7 @@ $$
 \end{equation}
 $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\hat{\eta}_k\}$ to the physical mesh $x_j = 2 \pi j / M$, where $M = 3N/2$. Compute the nonlinearity on the physical mesh and then forward transform the nonlinear product with truncation of wavenumbers larger than $N$. The result is here called $\{\hat{\eta^2}_k\}$.</p>
 <p>The seminonlinear equation is solved using an exponental Runge-Kutta integrator, see <a href="https://arxiv.org/pdf/1604.08900.pdf">Montanelli and Bootland</a>.</p>
-<p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where</p>
+<p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where it should be trivial to manipulate parameters and set up the solver. A jupyter notebook of this solver is found <a href="https://github.org/mikaem/surface-waves-on-liquid-films/surfacewaves.ipynb">here</a></p>
 
 </div>
 </div>
