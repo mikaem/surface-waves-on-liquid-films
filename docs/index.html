@@ -29,6 +29,96 @@ var bootstrapThebe = function() {
 document.querySelector("#activateButton").addEventListener('click', bootstrapThebe)
 </script>
 
+<script>
+  /**
+   * Add attributes to Thebelab blocks
+   */
+
+  const initThebelab = () => {
+      const addThebelabToCodeCells = () => {
+          console.log("Adding thebelab to code cells...");
+          // If Thebelab hasn't loaded, wait a bit and try again. This
+          // happens because we load ClipboardJS asynchronously.
+          if (window.thebelab === undefined) {
+              setTimeout(addThebelabToCodeCells, 250)
+          return
+          }
+
+          // If we already detect a Thebelab cell, don't re-run
+          if (document.querySelectorAll('div.thebelab-cell').length > 0) {
+              return;
+          }
+
+          // Find all code cells, replace with Thebelab interactive code cells
+          const codeCells = document.querySelectorAll('.input_area pre')
+          codeCells.forEach((codeCell, index) => {
+              const id = codeCellId(index)
+              codeCell.setAttribute('data-executable', 'true')
+
+              // Figure out the language it uses and add this too
+              var parentDiv = codeCell.parentElement.parentElement;
+              var arrayLength = parentDiv.classList.length;
+              for (var ii = 0; ii < arrayLength; ii++) {
+                  var parts = parentDiv.classList[ii].split('language-');
+                  if (parts.length === 2) {
+                      // If found, assign dataLanguage and break the loop
+                      var dataLanguage = parts[1];
+                      break;
+                  }
+              }
+              codeCell.setAttribute('data-language', dataLanguage)
+
+              // If the code cell is hidden, show it
+              var inputCheckbox = document.querySelector(`input#hidebtn${codeCell.id}`);
+              if (inputCheckbox !== null) {
+                  setCodeCellVisibility(inputCheckbox, 'visible');
+              }
+          });
+
+          // Remove the event listener from the page so keyboard press doesn't
+          // Change page
+          document.removeEventListener('keydown', initPageNav)
+          keyboardListener = false;
+
+          // Init thebelab
+          thebelab.bootstrap();
+
+          // Remove copy buttons since they won't work anymore
+          const copyAndThebeButtons = document.querySelectorAll('.copybtn, .thebebtn')
+          copyAndThebeButtons.forEach((button, index) => {
+              button.remove();
+          });
+
+          // Remove outputs since they'll be stale
+          const outputs = document.querySelectorAll('.output *, .output')
+          outputs.forEach((output, index) => {
+              output.remove();
+          });
+
+          // Find any cells with an initialization tag and ask ThebeLab to run them when ready
+          var thebeInitCells = document.querySelectorAll('div.tag_thebelab-init');
+          thebeInitCells.forEach((cell) => {
+              console.log("Initializing ThebeLab with cell: " + cell.id);
+              cell.querySelector('.thebelab-run-button').click();
+          });
+      }
+
+      // Add event listener for the function to modify code cells
+      const thebelabButtons = document.querySelectorAll('[id^=thebelab], [id$=thebelab]')
+      thebelabButtons.forEach((thebelabButton,index) => {
+          if (thebelabButton === null) {
+              setTimeout(initThebelab, 250)
+              return
+          };
+          thebelabButton.addEventListener('click', addThebelabToCodeCells);
+      });
+  }
+
+  // Initialize Thebelab
+  initFunction(initThebelab);
+</script>
+
+
 
 <style type="text/css">
     /*!
