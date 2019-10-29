@@ -7,8 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-
-<!-- Configure and load Thebe !-->
 <script type="text/x-thebe-config">
   {
     requestKernel: true,
@@ -25,98 +23,6 @@
 
 <script src="https://unpkg.com/thebelab@0.4.0/lib/index.js"></script>
 
-
-document.querySelector("#activateButton").addEventListener('click', bootstrapThebe)
-</script>
-
-<script>
-  /**
-   * Add attributes to Thebelab blocks
-   */
-
-  const initThebelab = () => {
-      const addThebelabToCodeCells = () => {
-          console.log("Adding thebelab to code cells...");
-          // If Thebelab hasn't loaded, wait a bit and try again. This
-          // happens because we load ClipboardJS asynchronously.
-          if (window.thebelab === undefined) {
-              setTimeout(addThebelabToCodeCells, 250)
-          return
-          }
-
-          // If we already detect a Thebelab cell, don't re-run
-          if (document.querySelectorAll('div.thebelab-cell').length > 0) {
-              return;
-          }
-
-          // Find all code cells, replace with Thebelab interactive code cells
-          const codeCells = document.querySelectorAll('.input_area pre')
-          codeCells.forEach((codeCell, index) => {
-              const id = codeCellId(index)
-              codeCell.setAttribute('data-executable', 'true')
-
-              // Figure out the language it uses and add this too
-              var parentDiv = codeCell.parentElement.parentElement;
-              var arrayLength = parentDiv.classList.length;
-              for (var ii = 0; ii < arrayLength; ii++) {
-                  var parts = parentDiv.classList[ii].split('language-');
-                  if (parts.length === 2) {
-                      // If found, assign dataLanguage and break the loop
-                      var dataLanguage = parts[1];
-                      break;
-                  }
-              }
-              codeCell.setAttribute('data-language', dataLanguage)
-
-              // If the code cell is hidden, show it
-              var inputCheckbox = document.querySelector(`input#hidebtn${codeCell.id}`);
-              if (inputCheckbox !== null) {
-                  setCodeCellVisibility(inputCheckbox, 'visible');
-              }
-          });
-
-          // Remove the event listener from the page so keyboard press doesn't
-          // Change page
-          document.removeEventListener('keydown', initPageNav)
-          keyboardListener = false;
-
-          // Init thebelab
-          thebelab.bootstrap();
-
-          // Remove copy buttons since they won't work anymore
-          const copyAndThebeButtons = document.querySelectorAll('.copybtn, .thebebtn')
-          copyAndThebeButtons.forEach((button, index) => {
-              button.remove();
-          });
-
-          // Remove outputs since they'll be stale
-          const outputs = document.querySelectorAll('.output *, .output')
-          outputs.forEach((output, index) => {
-              output.remove();
-          });
-
-          // Find any cells with an initialization tag and ask ThebeLab to run them when ready
-          var thebeInitCells = document.querySelectorAll('div.tag_thebelab-init');
-          thebeInitCells.forEach((cell) => {
-              console.log("Initializing ThebeLab with cell: " + cell.id);
-              cell.querySelector('.thebelab-run-button').click();
-          });
-      }
-
-      // Add event listener for the function to modify code cells
-      const thebelabButtons = document.querySelectorAll('[id^=thebelab], [id$=thebelab]')
-      thebelabButtons.forEach((thebelabButton,index) => {
-          if (thebelabButton === null) {
-              setTimeout(initThebelab, 250)
-              return
-          };
-          thebelabButton.addEventListener('click', addThebelabToCodeCells);
-      });
-  }
-
-  // Initialize Thebelab
-  initFunction(initThebelab);
-</script>
 
 
 
@@ -9240,15 +9146,15 @@ label {
 }
 /* Flexible box model classes */
 /* Taken from Alex Russell http://infrequently.org/2009/08/css-3-progress/ */
-/* This file is a compatability layer.  It allows the usage of flexible box
+/* This file is a compatability layer.  It allows the usage of flexible box 
 model layouts accross multiple browsers, including older browsers.  The newest,
 universal implementation of the flexible box model is used when available (see
-`Modern browsers` comments below).  Browsers that are known to implement this
+`Modern browsers` comments below).  Browsers that are known to implement this 
 new spec completely include:
 
     Firefox 28.0+
     Chrome 29.0+
-    Internet Explorer 11+
+    Internet Explorer 11+ 
     Opera 17.0+
 
 Browsers not listed, including Safari, are supported via the styling under the
@@ -12630,7 +12536,7 @@ div#pager .ui-resizable-handle {
   background: #f7f7f7;
   border-top: 1px solid #cfcfcf;
   border-bottom: 1px solid #cfcfcf;
-  /* This injects handle bars (a short, wide = symbol) for
+  /* This injects handle bars (a short, wide = symbol) for 
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
@@ -13144,14 +13050,14 @@ div#notebook {
   div.cell {
     display: block;
     page-break-inside: avoid;
-  }
-  div.output_wrapper {
+  } 
+  div.output_wrapper { 
     display: block;
-    page-break-inside: avoid;
+    page-break-inside: avoid; 
   }
-  div.output {
+  div.output { 
     display: block;
-    page-break-inside: avoid;
+    page-break-inside: avoid; 
   }
 }
 </style>
@@ -13207,6 +13113,10 @@ $$
 \eta(x, t) = \sum_{k=-N/2}^{N/2-1} \hat{\eta}_k(t) e^{\imath k x}, \label{eq:etaexpansion}
 \end{equation}
 $$<p>where $\{\hat{\eta}_k\}_{k=-N/2}^{N/2-1}$ are the Fourier expansion coefficients, and $e^{\imath k x}$ are the basis functions that we expand the solution in. Note that the expansion coefficients depend on time, but not on space.</p>
+<p>The initial solution is set to</p>
+$$
+\eta(x, 0) = h_0 e^{\imath x}.
+$$<p>That is, we start with only one nonzero Fourier coefficient, $\hat{\eta}_1=h_0$.</p>
 <p>With a spectral Galerkin method the governing equation can be transformed into an equation for the coefficients $\{\hat{\eta}_k\}$. This corresponds to taking a forward Fourier transform of Eq. \eqref{eq:eta}, something that is achieved by multiplying \eqref{eq:eta} by the test function $e^{-\imath m x}$ and integrating over the domain, which is set to $[0, 2\pi]$</p>
 $$
 \begin{equation}
@@ -13224,7 +13134,7 @@ $$
 \end{equation}
 $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\hat{\eta}_k\}$ to the physical mesh $x_j = 2 \pi j / M$, where $M = 3N/2$. Compute the nonlinearity on the physical mesh and then forward transform the nonlinear product with truncation of wavenumbers larger than $N$. The result is here called $\{\hat{\eta^2}_k\}$.</p>
 <p>The seminonlinear equation is solved using an exponental Runge-Kutta integrator, see <a href="https://arxiv.org/pdf/1604.08900.pdf">Montanelli and Bootland</a>.</p>
-<p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework, and we start the implementation by implementing all of its functionality</p>
+<p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where</p>
 
 </div>
 </div>
@@ -13234,29 +13144,12 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre data-executable=true><span></span><span class="kn">from</span> <span class="nn">shenfun</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre data-executable="true" data-language="python"><span></span><span class="kn">from</span> <span class="nn">shenfun</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</pre></div>
+<span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">display</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The next step is to choose the size of the discretization and fix the parameters. The Fourier basis functions are created as</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">24</span>
 <span class="n">T</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span> <span class="c1"># Using complex initial data</span>
 <span class="n">Tp</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">padding_factor</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
@@ -13273,107 +13166,33 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <span class="n">alpha</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">h0</span><span class="o">/</span><span class="n">lmbda</span>
 <span class="n">B_1</span> <span class="o">=</span> <span class="mf">8.</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="n">Re</span><span class="o">-</span><span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 <span class="n">C_1</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">alpha</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">We</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We need arrays to hold the solution. And we need a padded solution array to compute the nonlinear term.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">eta_</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="n">etap</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="n">Tp</span><span class="p">)</span>
+<span class="c1"># Arrays to hold the solution</span>
+<span class="n">eta_</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="n">etap</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="n">Tp</span><span class="p">)</span>      <span class="c1"># For the nonlinear part</span>
 <span class="n">eta_hat</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
+<span class="c1"># Initialize</span>
+<span class="n">eta_hat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The integrator needs one function to compute the linear part, and one term for the nonlinear. We create these functions as</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">LinearRHS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="c1"># The integrator needs one function to compute the linear part, </span>
+<span class="c1"># and one term for the nonlinear.</span>
+<span class="k">def</span> <span class="nf">LinearRHS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return linear operator for right hand side.&quot;&quot;&quot;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">B_1</span><span class="o">*</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">C_1</span><span class="o">*</span><span class="n">k</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">L</span>
 
 <span class="k">def</span> <span class="nf">NonlinearRHS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">eta_hat</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return nonlinear part of right hand side.&quot;&quot;&quot;</span>
     <span class="n">rhs</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">etap</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">Tp</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">eta_hat</span><span class="p">,</span> <span class="n">etap</span><span class="p">)</span>
     <span class="n">rhs</span> <span class="o">=</span> <span class="n">Tp</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">etap</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
     <span class="n">rhs</span> <span class="o">*=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span>
     <span class="k">return</span> <span class="n">rhs</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We can now initialize the solution, create and run the integrator. The initial solution is set to</p>
-$$
-\eta(x, 0) = h_0 e^{\imath x}.
-$$<p>That is, we start with only one nonzero Fourier coefficient</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">eta_hat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span><span class="o">/</span><span class="mf">2.</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The integrator also takes one optional function that can be used to do intermediate plotting, or storing intermediate results for later postprocessing</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">display</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">eta_hat</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tstep</span><span class="p">,</span> <span class="n">plot_step</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="o">**</span><span class="n">par</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function called at the end of each time step.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">tstep</span> <span class="o">%</span> <span class="n">plot_step</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">plot_step</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">eta</span> <span class="o">=</span> <span class="n">eta_hat</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>
@@ -13381,6 +13200,7 @@ $$<p>That is, we start with only one nonzero Fourier coefficient</p>
         <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
         <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eta_hat</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
+<span class="c1"># Specify time step size and end time. </span>
 <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="n">end_time</span> <span class="o">=</span> <span class="mf">10.</span>
 <span class="n">par</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;plot_step&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;fig&#39;</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)}</span>
@@ -13436,7 +13256,7 @@ $$<p>That is, we start with only one nonzero Fourier coefficient</p>
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>
+<div class=" highlight hl-ipython3"><pre data-executable="true" data-language="python"><span></span> 
 </pre></div>
 
     </div>
@@ -13448,7 +13268,7 @@ $$<p>That is, we start with only one nonzero Fourier coefficient</p>
   </div>
 </body>
 
-
+ 
 
 
 </html>

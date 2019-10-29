@@ -53,7 +53,7 @@ def ZeroRHS(self, u, u_hat, rhs, **params):
 #u_hat = T.forward(u_, u_hat)
 #u_hat.mask_nyquist(mask)
 #u_hat = np.where(abs(u_hat) < 1e-15, 0, u_hat)
-u_hat[1] = h0/2.
+u_hat[1] = h0
 u_hat0 = u_hat.copy()
 
 data = []
