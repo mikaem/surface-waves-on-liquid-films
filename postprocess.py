@@ -43,8 +43,9 @@ s = """
         }
     });
 </script>
-
-<button id="activateButton"  style="width: 150px; height: 75px; font-size: 1.5em;">Activate</button>
+<div class="button" align="center">
+<button id="activateButton" style="width: 150px; height: 75px; font-size: 1.5em;">Activate code</button>
+</div>
 <script>
 var bootstrapThebe = function() {
     thebelab.bootstrap();

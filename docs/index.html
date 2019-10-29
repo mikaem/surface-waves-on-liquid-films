@@ -44,8 +44,9 @@
         }
     });
 </script>
-
-<button id="activateButton"  style="width: 150px; height: 75px; font-size: 1.5em;">Activate</button>
+<div class="button" align="center">
+<button id="activateButton" style="width: 150px; height: 75px; font-size: 1.5em;">Activate code</button>
+</div>
 <script>
 var bootstrapThebe = function() {
     thebelab.bootstrap();
@@ -13132,8 +13133,10 @@ div#notebook {
 <li>This jupyter notebook can be downloaded from <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/surface-waves.ipynb">here</a>.</li>
 </ul>
 <p>If you do not have the required dependencies and don't want to install them, then you can follow the link below to a Binder image with the required dependencies installed</p>
-<div class="buttons" align=center>
-<a href="https://mybinder.org/v2/gh/mikaem/surface-waves-on-liquid-films/master?filepath=/"><button class="interact-button" id="interact-button-binder"><img class="interact-button-logo" src="logo_binder.svg" alt="Binder" />Binder</button></a>
+<div class="button" align="center">
+<a href="https://mybinder.org/v2/gh/mikaem/surface-waves-on-liquid-films/master?filepath=/">
+    <button><img src="logo_binder.svg" alt="Binder"/>
+        Binder</button></a>
 </div><p>Finally, if you are happy with just running the code in this html, then press the Activate button on the top of this page in order to activate the Python code below. Note that you can still modify the code in this html-document, but you will not be able to store the changes made.</p>
 <p>The surface wave equations derived by Gjevik are given as</p>
 $$
@@ -13182,7 +13185,7 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre data-executable="true" data-language="python"><span></span><span class="kn">from</span> <span class="nn">shenfun</span> <span class="k">import</span> <span class="o">*</span>
@@ -13319,13 +13322,42 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre data-executable="true" data-language="python"><span></span><span class="nb">print</span><span class="p">(</span><span class="n">eta_hat</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre data-executable="true" data-language="python">[ 0.00000000e+00+0.00000000e+00j -3.10760148e-05+3.59804713e-05j
+ -1.80401064e-08+2.57932623e-09j -7.05969209e-12-4.58882550e-12j
+ -8.81819731e-16-3.13016216e-15j  4.38533010e-19-9.16923021e-19j
+  2.59467126e-22-1.10730381e-22j  6.92524036e-26+2.25179765e-26j
+ -2.83397389e-26-7.76017635e-26j -3.27906197e-28+1.43301732e-28j
+ -1.81905771e-27+3.41649067e-27j -2.96994599e-28+6.47521891e-30j
+  0.00000000e+00+0.00000000e+00j  1.44328764e-28-1.50239996e-27j
+  3.44687288e-26-3.19036967e-26j  2.71876103e-27-4.58450718e-30j
+  2.12565905e-27+1.01984601e-27j -3.67800585e-27+3.87816868e-27j
+  7.72524016e-27+1.83499132e-26j  1.74129945e-27-1.04779504e-27j
+ -1.63310794e-25-1.88417858e-26j -1.87069000e-27+3.78989307e-27j
+ -3.83407005e-26-1.04417653e-26j -1.98262775e-27+6.94564924e-27j]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
