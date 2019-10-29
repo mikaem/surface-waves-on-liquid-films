@@ -30,6 +30,7 @@ C_1 = 2./3.*alpha**2*We
 
 def LinearRHS(self, **params):
     L = -2.*inner(Dx(u, 0, 1), v)[0]-alpha*(B_1*inner(Dx(u, 0, 2), v)[0]+C_1*inner(Dx(u, 0, 4), v)[0])
+    #L = -2*1j*k - alpha*(-B_1*k**2 + C_1*k**4)
     return L
 
 def NonlinearRHS(self, u, u_hat, rhs, **params):
@@ -57,13 +58,11 @@ u_hat0 = u_hat.copy()
 
 data = []
 tdata = []
-plt.figure()
-
-def update(self, u, u_hat, t, tstep, plot_step, **params):
+def update(self, u, u_hat, t, tstep, plot_step, axes, **params):
     if tstep % plot_step == 0 and plot_step > 0:
         u = T.backward(u_hat, u)
-        plt.plot(x, u)
-        plt.draw()
+        axes.plot(x, u)
+        #axes.draw()
         plt.pause(1e-6)
         data.append(u_hat.copy())
 
@@ -75,7 +74,8 @@ def linupdate(self, u, u_hat, t, tstep, plot_step, **params):
 dt = 0.002
 end_time = 50.
 #par = {'plot_step': int(end_time/25/dt)}
-par = {'plot_step': 500}
+par = {'plot_step': 500,
+       'axes': plt.figure(1).gca()}
 
 #integrator = RK4(T, L=LinearRHS, N=NonlinearRHS, update=update, **par)
 integrator = ETDRK4(T, L=LinearRHS, N=NonlinearRHS, update=update, **par)
