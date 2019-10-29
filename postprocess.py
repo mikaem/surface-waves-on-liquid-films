@@ -9,7 +9,7 @@ s = """
 <script type="text/x-thebe-config">
   {
     requestKernel: true,
-    bootstrap: true,
+    bootstrap: false,
     binderOptions: {
       repo: "mikaem/surface-waves-on-liquid-films",
       ref: "master",
@@ -43,6 +43,16 @@ s = """
         }
     });
 </script>
+
+<button id="activateButton"  style="width: 150px; height: 75px; font-size: 1.5em;">Activate</button>
+<script>
+var bootstrapThebe = function() {
+    thebelab.bootstrap();
+}
+
+document.querySelector("#activateButton").addEventListener('click', bootstrapThebe)
+</script>
+
 """
 b = open('surfacewaves.html', 'w')
 b.write(bs[:270]+s+bs[270:])
