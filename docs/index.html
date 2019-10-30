@@ -13183,7 +13183,7 @@ $$
 \end{equation}
 $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\hat{\eta}_k\}$ to the physical mesh $x_j = 2 \pi j / M$, where $M = 3N/2$. Compute the nonlinearity on the physical mesh and then forward transform the nonlinear product with truncation of wavenumbers larger than $N$. The result is here called $\{\widehat{\eta^2}_k\}$.</p>
 <p>The semi-nonlinear equation is integrated forward in time using an exponental Runge-Kutta integrator, see <a href="https://arxiv.org/pdf/1604.08900.pdf">Montanelli and Bootland</a>.</p>
-<p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where it should be trivial to manipulate parameters and set up the solver. A jupyter notebook of this solver is found <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/surfacewaves.ipynb">here</a></p>
+<h2 id="Implementation">Implementation<a class="anchor-link" href="#Implementation">&#182;</a></h2><p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where it should be trivial to manipulate parameters and set up the solver. A jupyter notebook of this solver is found <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/surfacewaves.ipynb">here</a></p>
 
 </div>
 </div>
@@ -13240,8 +13240,8 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
     <span class="n">rhs</span> <span class="o">*=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span>
     <span class="k">return</span> <span class="n">rhs</span>
 
-<span class="c1"># Linear solution at time t</span>
 <span class="k">def</span> <span class="nf">get_linear_solution</span><span class="p">(</span><span class="n">u_hat</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return linear exact solution at time t.&quot;&quot;&quot;</span>
     <span class="n">u_hat</span><span class="p">[</span><span class="n">w0</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">LinearRHS</span><span class="p">(</span><span class="kc">None</span><span class="p">)[</span><span class="n">w0</span><span class="p">]</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">u_hat</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
@@ -13262,6 +13262,7 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <span class="c1"># Specify time step size and end time. </span>
 <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.002</span>
 <span class="n">end_time</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="c1"># Prepare figure for dynamic plotting</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$\eta$&#39;</span><span class="p">)</span>
@@ -13282,7 +13283,7 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Do postprocessing below if desired.</p>
+<p>Do postprocessing below if needed.</p>
 
 </div>
 </div>
