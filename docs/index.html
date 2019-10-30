@@ -13126,10 +13126,10 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Surface-waves-on-liquid-films">Surface waves on liquid films<a class="anchor-link" href="#Surface-waves-on-liquid-films">&#182;</a></h1><p>This note is written using <a href="https://jupyter.org">jupyter</a>. It describes a Python solver for the surface wave equations \eqref{eq:eta} derived by <a href="https://doi.org/10.1063/1.1693186">Gjevik</a>. The solver is using <a href="https://github.com/spectralDNS/shenfun">shenfun</a> for its simple interface to the Fourier base functions, and its ability to do dealiasing. It is using <a href="https://matplotlib.org">matplotlib</a> for plotting.</p>
+<h1 id="Finite-Amplitude-Surface-Waves-on-Falling-Liquid-Films">Finite-Amplitude Surface Waves on Falling Liquid Films<a class="anchor-link" href="#Finite-Amplitude-Surface-Waves-on-Falling-Liquid-Films">&#182;</a></h1><p>This note is written using <a href="https://jupyter.org">jupyter</a>. It describes a Python solver for the surface wave equation \eqref{eq:eta} derived by <a href="https://doi.org/10.1063/1.1693186">Gjevik, 1970</a>. The solver is using <a href="https://github.com/spectralDNS/shenfun">shenfun</a> for its simple interface to the Fourier base functions, and its ability to do dealiasing. It is using <a href="https://matplotlib.org">matplotlib</a> for plotting.</p>
 <p>If you have the required dependencies installed, then a</p>
 <ul>
-<li>Python version of the solver can be downloaded from the <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/film.py">github repository</a>. </li>
+<li>Python version of the solver can be downloaded from <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/film.py">here</a>. </li>
 <li>This jupyter notebook can be downloaded from <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/surfacewaves.ipynb">here</a>.</li>
 </ul>
 <p>If you do not have the required dependencies and don't want to install them, then you can follow the link below to a Binder image with the required dependencies installed</p>
@@ -13138,46 +13138,51 @@ div#notebook {
     <button><img src="logo_binder.svg" alt="Binder"/>
         Binder</button></a>
 </div><p>Finally, if you are happy with just running the code in this html, then press the Activate button on the top of this page in order to activate the Python code below. Note that you can still modify the code in this html-document, but you will not be able to store the changes made.</p>
-<p>The surface wave equations derived by Gjevik are given as</p>
+<h2 id="Surface-wave-equation">Surface wave equation<a class="anchor-link" href="#Surface-wave-equation">&#182;</a></h2><p>The surface wave equation derived by Gjevik is given as</p>
 $$
 \begin{equation}
 \frac{\partial \eta}{\partial t} + 2\left(\frac{\partial \eta}{\partial x} + \frac{\partial \eta^2}{\partial x} \right)+\alpha \left(B_1 \frac{\partial^2 \eta}{\partial x^2}+C_1\frac{\partial^4 \eta}{\partial x^4}\right) = 0. \label{eq:eta}
 \end{equation}
-$$<p>Here the surface elevation is given as $\eta(x, t)$, whereas $\alpha, B_1$ and $C_1$ are constants dependent on the liquid height, $h_0$, angle of the surface with the vector of gravity acceleration, $\theta$, wave length, $\lambda$, the Reynolds and Weber numbers. In the model these parameters are related as</p>
+$$<p>Here the surface elevation is given as $\eta(x, t)$, whereas $\alpha, B_1$ and $C_1$ are constants dependent on the liquid height, $h_0$, angle $\theta$ of the surface with the horizontal plane, wave length, $\lambda$, the Reynolds and Weber numbers. In the model these parameters are related as</p>
 $$
 \begin{align}
 \alpha &amp;= \frac{2 \pi h_0}{\lambda}, \\
 B_1 &amp;= \frac{8}{15} \text{Re} - \frac{2}{3\tan \theta}, \\
 C_1 &amp;= \frac{2}{3} \alpha^2 \text{We}.
 \end{align}
-$$<p>We assume that the solution is periodic in the $x$-direction and solve the nonlinear equation using a Fourier discretization in space, and a <a href="https://arxiv.org/pdf/1604.08900.pd">fourth order Exponential Runge-Kutta method in time</a>.</p>
+$$<p>We assume that the solution is periodic in the streamwise $x$-direction (the direction of the falling film) and solve the nonlinear equation using a Fourier discretization in space, and a <a href="https://arxiv.org/pdf/1604.08900.pdf">fourth order Exponential Runge-Kutta method in time</a>. The domain is set to $[0, 2\pi]$.</p>
 <p>A Fourier expansion of the solution is given as</p>
 $$
 \begin{equation}
-\eta(x, t) = \sum_{k=-N/2}^{N/2-1} \hat{\eta}_k(t) e^{\imath k x}, \label{eq:etaexpansion}
+\eta(x, t) = \sum_{k \in \boldsymbol{k}} \hat{\eta}_k(t) e^{\imath k x}, \label{eq:etaexpansion}
 \end{equation}
-$$<p>where $\{\hat{\eta}_k\}_{k=-N/2}^{N/2-1}$ are the Fourier expansion coefficients, $\imath=\sqrt{-1}$, and $e^{\imath k x}$ are the basis functions that we expand the solution in. Note that the expansion coefficients depend on time, but not on space.</p>
+$$<p>where $\{\hat{\eta}_k\}_{k\in \boldsymbol{k}}$ are the Fourier expansion coefficients, $\imath=\sqrt{-1}$, and $e^{\imath k x}$ are the basis functions that we expand the solution in. Note that the expansion coefficients depend on time, but not on space. The set $\boldsymbol{k} = (-N/2, -N-2+1, \ldots, N/2-1)$ for even choice of $N$ and $\boldsymbol{k} = (-N/2, -N-2+1, \ldots, N/2)$ for odd N.</p>
 <p>The initial solution is set to</p>
 $$
-\eta(x, 0) = h_0 e^{\imath x}.
-$$<p>That is, we start with only one nonzero Fourier coefficient, $\hat{\eta}_1=h_0$.</p>
-<p>With a spectral Galerkin method the governing equation can be transformed into an equation for the coefficients $\{\hat{\eta}_k\}$. This corresponds to taking a forward Fourier transform of Eq. \eqref{eq:eta}, something that is achieved by multiplying \eqref{eq:eta} by the test function $e^{-\imath m x}$ and integrating over the domain, which is set to $[0, 2\pi]$</p>
+\eta(x, 0) = h_0 e^{\imath w_0 x},
+$$<p>where $w_0 \in \mathbb{Z}$. This means that we start with only one nonzero Fourier coefficient, $\hat{\eta}_{w_0}=h_0$.</p>
+<p>With a spectral Galerkin method the governing partial differential equation can be transformed into a set of ordinary differential equations for the coefficients $\{\hat{\eta}_k\}$. To this end we need to perform a forward Fourier transform of Eq. \eqref{eq:eta}, something that is achieved by multiplying \eqref{eq:eta} by the complex conjugate of the test function $e^{\imath m x}$, $m \in \boldsymbol{k}$ and integrating over the domain</p>
 $$
 \begin{equation}
-\int_{0}^{2\pi}\left\{\frac{\partial \eta}{\partial t} + 2\left(\frac{\partial \eta}{\partial x} + \frac{\partial \eta^2}{\partial x} \right)+\alpha \left(B_1 \frac{\partial^2 \eta}{\partial x^2}+C_1\frac{\partial^4 \eta}{\partial x^4}\right) \right\} e^{-\imath m x} dx =0 \label{eq:etatransform}
+\int_{0}^{2\pi}\left\{\frac{\partial \eta}{\partial t} + 2\left(\frac{\partial \eta}{\partial x} + \frac{\partial \eta^2}{\partial x} \right)+\alpha \left(B_1 \frac{\partial^2 \eta}{\partial x^2}+C_1\frac{\partial^4 \eta}{\partial x^4}\right) \right\} e^{-\imath m x} dx =0. \label{eq:etatransform}
 \end{equation}
-$$<p>Insert for $\eta$ using \eqref{eq:etaexpansion} to obtain</p>
+$$<p>Insert for $\eta$ using \eqref{eq:etaexpansion} and the pseudospectral approximation $\eta^2 = \sum_k \widehat{\eta^2}_k e^{\imath k x}$, we obtain</p>
 $$
 \begin{equation}
-\int_{0}^{2\pi}\left\{\frac{\partial}{\partial t}\sum_{k} \hat{\eta}_k(t) e^{\imath k x} + 2 \frac{\partial}{\partial x} \left( \sum_{k} \hat{\eta}_k(t) e^{\imath k x} + \eta^2 \right)+\alpha \left(B_1 \frac{\partial^2 }{\partial x^2} \sum_{k} \hat{\eta}_k(t) e^{\imath k x}+C_1\frac{\partial^4}{\partial x^4} \sum_{k} \hat{\eta}_k(t) e^{\imath k x} \right) \right\} e^{-\imath m x} dx  = 0. \label{eq:etatransform2}
+\int_{0}^{2\pi}\left\{\frac{\partial}{\partial t}\sum_{k} \hat{\eta}_k e^{\imath k x} + 2 \frac{\partial}{\partial x} \left( \sum_{k} \hat{\eta}_k e^{\imath k x} + \sum_k \widehat{\eta^2}_k e^{\imath k x} \right)+\alpha \left(B_1 \frac{\partial^2 }{\partial x^2} \sum_{k} \hat{\eta}_k e^{\imath k x}+C_1\frac{\partial^4}{\partial x^4} \sum_{k} \hat{\eta}_k e^{\imath k x} \right) \right\} e^{-\imath m x} dx  = 0. \label{eq:etatransform2}
 \end{equation}
-$$<p>Note that we do not insert for $\eta$ in the nonlinear term. This is because the nonlinearity needs to be computed with a pseudospectral method, and this will be described below. All linear terms transform trivially due to orthogonality of the exponential functions, i.e., only integrals with $k=m$ are nonzero, leading to</p>
+$$<p>Note that the nonlinear $\{\widehat{\eta^2}_k\}$ needs to be computed with a pseudospectral method, briefly described below. All spatial derivatives are now performed analytically leading to</p>
 $$
 \begin{equation}
-\frac{\partial \hat{\eta}_k}{\partial t} + 2 \imath k \hat{\eta^2}_k + \left( 2 \imath k + \alpha (-B_1 k^2 + C_1 k^4) \right) \hat{\eta}_k = 0. \label{eq:etatransform3}
+\int_{0}^{2\pi}\left\{\frac{d}{dt}\sum_{k} \hat{\eta}_k e^{\imath k x} + 2 \imath k \left( \sum_{k} \hat{\eta}_k e^{\imath k x} + \sum_k \widehat{\eta^2}_k e^{\imath k x} \right)+\alpha \left(-B_1 k^2 \sum_{k} \hat{\eta}_k e^{\imath k x}+C_1 k^4 \sum_{k} \hat{\eta}_k e^{\imath k x} \right) \right\} e^{-\imath m x} dx  = 0. \label{eq:etatransform3}
 \end{equation}
-$$<p>The nonlinear term is computed with dealiasing by first transforming $\{\hat{\eta}_k\}$ to the physical mesh $x_j = 2 \pi j / M$, where $M = 3N/2$. Compute the nonlinearity on the physical mesh and then forward transform the nonlinear product with truncation of wavenumbers larger than $N$. The result is here called $\{\hat{\eta^2}_k\}$.</p>
-<p>The seminonlinear equation is solved using an exponental Runge-Kutta integrator, see <a href="https://arxiv.org/pdf/1604.08900.pdf">Montanelli and Bootland</a>.</p>
+$$<p>Due to orthogonality of the exponential functions the only integrals that are nonzero are for $k=m$, leading to</p>
+$$
+\begin{equation}
+\frac{d \hat{\eta}_k}{dt} + 2 \imath k \widehat{\eta^2}_k + \left( 2 \imath k + \alpha (-B_1 k^2 + C_1 k^4) \right) \hat{\eta}_k = 0. \label{eq:etatransform4}
+\end{equation}
+$$<p>The nonlinear term is computed with dealiasing by first transforming $\{\hat{\eta}_k\}$ to the physical mesh $x_j = 2 \pi j / M$, where $M = 3N/2$. Compute the nonlinearity on the physical mesh and then forward transform the nonlinear product with truncation of wavenumbers larger than $N$. The result is here called $\{\widehat{\eta^2}_k\}$.</p>
+<p>The semi-nonlinear equation is integrated forward in time using an exponental Runge-Kutta integrator, see <a href="https://arxiv.org/pdf/1604.08900.pdf">Montanelli and Bootland</a>.</p>
 <p>To solve the equations numerically we will use the <a href="https://github.org/spectralDNS/shenfun">shenfun</a> spectral Galerkin computational framework. Below is a complete solver, where it should be trivial to manipulate parameters and set up the solver. A jupyter notebook of this solver is found <a href="https://github.com/mikaem/surface-waves-on-liquid-films/blob/master/surfacewaves.ipynb">here</a></p>
 
 </div>
@@ -13197,8 +13202,6 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <span class="n">T</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span> <span class="c1"># Using complex initial data</span>
 <span class="n">Tp</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">padding_factor</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="n">k</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">(</span><span class="n">scaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eliminate_highest_freq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Choose papameters</span>
@@ -13268,6 +13271,7 @@ $$<p>The nonlinear term is computed with dealiasing by first transforming $\{\ha
 <span class="n">integrator</span> <span class="o">=</span> <span class="n">ETDRK4</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="n">LinearRHS</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">NonlinearRHS</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">,</span> <span class="o">**</span><span class="n">par</span><span class="p">)</span>
 <span class="n">integrator</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
 <span class="n">eta_hat</span> <span class="o">=</span> <span class="n">integrator</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">eta_</span><span class="p">,</span> <span class="n">eta_hat</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
     </div>
